@@ -1,0 +1,63 @@
+// Task 4 — Marathos dimensional model
+// Star schema for the gold layer.
+
+Table fct_results {
+  result_id              varchar [primary key]  // sha2(event_name | year | athlete_source_id | performance, 256)
+  event_id               varchar [not null]     // sha2(event_name, 256)
+  athlete_id             varchar [not null]     // sha2(athlete_source_id, 256)
+  date_id                integer [not null]
+  performance_time_seconds double  // populated for distance events (km / mi)
+  performance_distance_km  double  // populated for time events (h)
+  athlete_average_speed    double
+  athlete_age              integer
+  athlete_age_category     varchar
+}
+
+Table dim_event {
+  event_id                varchar [primary key]
+  event_name              varchar [not null]
+  event_type              varchar  // 'distance' | 'time'
+  event_distance_length   varchar  // raw source label, e.g. '100km', '24h'
+  event_distance_km       double   // null for time events
+  event_duration_hours    double   // null for distance events
+  event_number_of_finishers integer
+}
+
+Table dim_athlete {
+  athlete_id              varchar [primary key]
+  athlete_source_id       integer
+  athlete_country         varchar
+  athlete_country_name    varchar  // bonus: full country name joined from dim_country
+  athlete_club            varchar
+  athlete_gender          varchar
+  athlete_year_of_birth   integer
+}
+
+Table dim_date {
+  date_id                 integer [primary key]   // yyyymmdd
+  full_date               date    [not null]
+  year                    integer
+  quarter                 integer
+  month                   integer
+  month_name              varchar
+  day                     integer
+  day_of_week             integer
+  day_name                varchar
+  is_weekend              boolean
+}
+
+// Bonus dimension — country abbreviations enrichment
+Table dim_country {
+  country_code            varchar [primary key]   // 3-letter code from source
+  country_name            varchar
+  iso_alpha_2             varchar
+  iso_alpha_3             varchar
+  region                  varchar
+  subregion               varchar
+}
+
+// Relationships
+Ref: fct_results.event_id   > dim_event.event_id
+Ref: fct_results.athlete_id > dim_athlete.athlete_id
+Ref: fct_results.date_id    > dim_date.date_id
+Ref: dim_athlete.athlete_country > dim_country.country_code
