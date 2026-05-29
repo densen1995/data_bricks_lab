@@ -3,7 +3,7 @@
 # MAGIC # Task 1 — Exploratory Data Analysis
 # MAGIC
 # MAGIC Dataset: `TWO_CENTURIES_OF_UM_RACES.csv` — ultramarathon race results.
-# MAGIC Source: `/Volumes/marathos/default/raw/TWO_CENTURIES_OF_UM_RACES.csv`
+# MAGIC Source: `/Volumes/marathos/default/raw/historical/TWO_CENTURIES_OF_UM_RACES.csv`
 
 # COMMAND ----------
 
@@ -12,7 +12,7 @@ from pyspark.sql.types import (
     StructType, StructField, IntegerType, StringType, DoubleType
 )
 
-RAW_PATH = "/Volumes/marathos/default/raw/TWO_CENTURIES_OF_UM_RACES.csv"
+RAW_PATH = "/Volumes/marathos/default/raw/historical/TWO_CENTURIES_OF_UM_RACES.csv"
 
 # COMMAND ----------
 
