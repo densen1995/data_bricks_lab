@@ -1,13 +1,13 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # BONUS — Country abbreviations lookup → `marathos.gold.dim_country`
+# MAGIC # Country abbreviations lookup - `marathos.gold.dim_country`
 # MAGIC
 # MAGIC The source dataset uses 3-letter country codes (IOC-style: `CHI`, `RUS`, `GBR`, …).
 # MAGIC We build a `dim_country` from a curated mapping of the codes actually present in
 # MAGIC the data, then enrich downstream views with the full country name.
 # MAGIC
 # MAGIC Source of mapping: hand-curated against IOC + ISO-3166 alpha-3 listings.
-# MAGIC LLM was used to help draft the initial mapping for the long tail of less common
+# MAGIC initial mapping for the long tail of less common
 # MAGIC codes; cross-checked against the public IOC code table.
 
 # COMMAND ----------
