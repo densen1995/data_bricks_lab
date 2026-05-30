@@ -1,12 +1,7 @@
-# Tasks 6 & 7 — Dashboard + Marathos Genie setup
+## Task 6 — Lakeview dashboard 
 
-Both are UI-driven in Databricks. Everything they need (gold views, validation
-notebook, widget SQL) is already in the repo — the steps below are just the
-clicks left to do in the workspace.
-
-## Task 6 — Lakeview dashboard
-
-1. **Dashboards → Create dashboard**, name it `marathos_overview`.
+0. (Including instructions on how to navigate the dashboard)
+1. **Dashboards → Create dashboard**, name: `marathos_overview`.
 2. Set the data source to the Serverless Starter Warehouse.
 3. Open `explorations/03_dashboard_queries.sql`. For each cell:
    - Copy the SQL into a new **Dataset** in the dashboard.
