@@ -46,6 +46,7 @@ df = (
 )
 
 df.printSchema()
+df.limit(10).display()
 
 # COMMAND ----------
 
