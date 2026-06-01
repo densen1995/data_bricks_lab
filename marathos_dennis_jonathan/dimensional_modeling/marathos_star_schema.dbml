@@ -2,12 +2,12 @@
 // Star schema for the gold layer.
 
 Table fct_results {
-  result_id              varchar [primary key]  // sha2(event_name | year | athlete_source_id | performance, 256)
-  event_id               varchar [not null]     // sha2(event_name, 256)
-  athlete_id             varchar [not null]     // sha2(athlete_source_id, 256)
+  result_id              varchar [primary key]  
+  event_id               varchar [not null]     
+  athlete_id             varchar [not null]     
   date_id                integer [not null]
-  performance_time_seconds double  // populated for distance events (km / mi)
-  performance_distance_km  double  // populated for time events (h)
+  performance_time_seconds double  
+  performance_distance_km  double  
   athlete_average_speed    double
   athlete_age              integer
   athlete_age_category     varchar
@@ -16,10 +16,10 @@ Table fct_results {
 Table dim_event {
   event_id                varchar [primary key]
   event_name              varchar [not null]
-  event_type              varchar  // 'distance' | 'time'
-  event_distance_length   varchar  // raw source label, e.g. '100km', '24h'
-  event_distance_km       double   // null for time events
-  event_duration_hours    double   // null for distance events
+  event_type              varchar  
+  event_distance_length   varchar  
+  event_distance_km       double   
+  event_duration_hours    double   
   event_number_of_finishers integer
 }
 
@@ -46,9 +46,9 @@ Table dim_date {
   is_weekend              boolean
 }
 
-// Bonus dimension — country abbreviations enrichment
+// country abbreviations enrichment
 Table dim_country {
-  country_code            varchar [primary key]   // 3-letter code from source
+  country_code            varchar [primary key]   
   country_name            varchar
   iso_alpha_2             varchar
   iso_alpha_3             varchar
