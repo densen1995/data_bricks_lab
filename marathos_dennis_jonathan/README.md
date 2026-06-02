@@ -1,6 +1,6 @@
-# Marathos ETL pipeline — Dennis Jonathan
+# Marathos ETL pipeline 
 
-Databricks medallion-architecture project for the **Marathos lab**. Ingests two
+Databricks medallion-architecture project for the **Marathos race**. Ingests two
 centuries of ultramarathon race results into a `marathos` Unity Catalog and
 exposes a star-schema gold layer for dashboards and a Genie space.
 
@@ -9,7 +9,8 @@ exposes a star-schema gold layer for dashboards and a Genie space.
 ```
 marathos_dennis_jonathan/
 ├── dimensional_modeling/
-│   └── marathos_star_schema.dbml    
+│   └── marathos_star_schema.dbml
+│   └── marathosdb(1).png    
 ├── explorations/
 │   ├── 01_eda.py                   
 │   ├── 02_genie_answer_validation.py 
@@ -24,7 +25,7 @@ marathos_dennis_jonathan/
     ├── setup_unity_catalog.sql     
     ├── 01_country_abbreviations.py 
     ├── 02_simulated_marathon_stream.py 
-    └── marathos_pipeline_job.json  
+      
 ```
 
 ## Unity Catalog
@@ -45,26 +46,27 @@ marathos
     ├── dim_country                  
     ├── fct_results
     ├── vw_distance_top_events
+    ├── vw_distance_gender_split
     ├── vw_distance_country_leaderboard
     ├── vw_time_top_events
     ├── vw_time_country_leaderboard
+    ├── vw_time_yearly_progression
     └── vw_results_enriched          
 ```
 
-## Pipeline order (manual or via `utils/marathos_pipeline_job.json`)
+## Pipeline order (manual)
 
 1. `utils/setup_unity_catalog.sql`
-2. CSV upload to `/Volumes/marathos/default/raw/` 
-3. `transformations/bronze/01_ingest_races_bronze`
+2. CSV upload to `/Volumes/marathos/default/raw/historical` 
+3. `transformations/bronze/01_ingest_races_bronze + simulated marathon data(utils/02_simulated_marathon_stream)`
 4. `transformations/silver/01_clean_races_silver`
 5. `utils/01_country_abbreviations` 
 6. `transformations/gold/01_build_gold_tables`
 7. `transformations/gold/02_create_views`
-8. `utils/02_simulated_marathon_stream`
 
 ## Source attribution
 
-LLM, guide from my teacher Kokchung and lectures from the class was used as a sounding board for code snippets and the
-initial draft of `dim_country` and simulated marathos event (then cross-checked against the IOC code list).
-The `sha()` ID-generation pattern is from the lab spec. Every other
-piece of code is original.
+LLM generators(country IOC etc) and kaggle data.
+
+
+
