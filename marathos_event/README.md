@@ -7,7 +7,7 @@ exposes a star-schema gold layer for dashboards and a Genie space.
 ## Layout
 
 ```
-marathos_dennis_jonathan/
+marathos_event/
 ├── dimensional_modeling/
 │   └── marathos_star_schema.dbml
 │   └── marathosdb(1).png    

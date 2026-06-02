@@ -193,4 +193,3 @@ print(f"wrote {target} ({len(rows)} rows)")
 # COMMAND ----------
 
 display(dbutils.fs.ls(SIMULATED_DIR))
-
