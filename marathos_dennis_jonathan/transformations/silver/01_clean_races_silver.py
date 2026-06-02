@@ -5,6 +5,8 @@
 # MAGIC Cleans the bronze table and writes `marathos.silver.races_obt`.
 # MAGIC
 # MAGIC Cleaning rules:
+# MAGIC
+# MAGIC 0. Source column normalization 
 # MAGIC 1. Parse `event_distance_length` → numeric value + unit (`km`, `mi`, `h`, `d`).
 # MAGIC 2. Parse `athlete_performance` → numeric value + unit (`h` for time, `km` for distance).
 # MAGIC 3. **Validity**:
@@ -12,7 +14,7 @@
 # MAGIC    - time events (h) must have a km-format performance.
 # MAGIC    - `d` (days) events are dropped as invalid per the lab spec.
 # MAGIC 4. Time strings converted to total seconds (DoubleType).
-# MAGIC 5. `event_id`, `athlete_id`, `result_id` produced via `dense_rank()` / `row_number()`.
+# MAGIC 5. `event_id`, `athlete_id`, `result_id` produced via `sha2()` .
 
 # COMMAND ----------
 
@@ -42,7 +44,7 @@ def safe_double(col):
 # COMMAND ----------
 
 # Treat all genders as the M/W convention (matches ultramarathon datasets +
-# the stream generator). Map F → W so the dashboard isn't split across both.
+# the stream generator). Map F -> W so the dashboard isn't split across both.
 gender_clean = F.upper(F.trim(F.col("athlete_gender")))
 country_clean = F.upper(F.trim(F.col("athlete_country")))
 club_clean = F.trim(F.col("athlete_club"))
@@ -241,10 +243,7 @@ df = (
 
 # MAGIC %md ## 6. Surrogate IDs via sha2 (streaming-safe, collision-resistant)
 # MAGIC
-# MAGIC `dense_rank()` / `row_number()` are global window functions that need to see
-# MAGIC every row to assign ranks — Spark forbids them on streaming DataFrames and
-# MAGIC even in batch they emit a "no partition defined" warning that collapses the
-# MAGIC work onto a single executor. We use `sha2(..., 256)` instead: a deterministic
+# MAGIC  We use `sha2(..., 256)` : a deterministic
 # MAGIC per-row hash that returns a 256-bit hex string. Same logic works in batch
 # MAGIC *and* a streaming silver pipeline, IDs are stable across re-runs, and the
 # MAGIC hash space is so large that collisions are effectively impossible
@@ -319,5 +318,4 @@ silver = df.select(
 )
 
 print(f"wrote {SILVER_TABLE}: {spark.table(SILVER_TABLE).count():,} rows")
-silver.limit(5).display()
-
+silver.limit(10).display()

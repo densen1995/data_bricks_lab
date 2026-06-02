@@ -5,7 +5,7 @@
 # MAGIC Reads CSVs from two folders under the raw volume:
 # MAGIC
 # MAGIC - `historical/` — the original `TWO_CENTURIES_OF_UM_RACES.csv`
-# MAGIC - `simulated/`  — synthetic events produced by the BONUS simulator notebook
+# MAGIC - `simulated/`  — synthetic events produced by the simulator notebook
 # MAGIC
 # MAGIC Both folders share the same source schema, so they're read with one schema
 # MAGIC definition, unioned, and written to `marathos.bronze.races_raw` as a single
@@ -121,4 +121,3 @@ df_bronze.printSchema()
 )
 
 print(f"wrote {BRONZE_TABLE}: {spark.table(BRONZE_TABLE).count():,} rows")
-
