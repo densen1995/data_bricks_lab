@@ -2,10 +2,11 @@
 -- MAGIC %md
 -- MAGIC # Task 5 — Gold business views
 -- MAGIC
--- MAGIC Two views per marathon type, plus a couple of cross-cutting views.
--- MAGIC The lab specifies "at least two views for each of the marathon types".
+-- MAGIC Two views per marathon type(added an additional view for each), plus a couple of cross-cutting views.
+-- MAGIC
 
 -- COMMAND ----------
+
 -- MAGIC %md ## Distance events (km / mi) views
 
 -- COMMAND ----------
@@ -60,6 +61,7 @@ GROUP  BY e.event_distance_length, e.event_distance_km, a.athlete_gender
 ORDER  BY e.event_distance_km, a.athlete_gender;
 
 -- COMMAND ----------
+
 -- MAGIC %md ## Time events (h) views
 
 -- COMMAND ----------
@@ -110,6 +112,7 @@ GROUP  BY d.year, e.event_duration_hours
 ORDER  BY d.year DESC, e.event_duration_hours;
 
 -- COMMAND ----------
+
 -- MAGIC %md ## Cross-cutting summary view (dashboard-ready)
 
 -- COMMAND ----------
@@ -135,4 +138,3 @@ FROM   marathos.gold.fct_results f
 JOIN   marathos.gold.dim_event   e USING (event_id)
 JOIN   marathos.gold.dim_athlete a USING (athlete_id)
 LEFT JOIN marathos.gold.dim_date d  USING (date_id);
-

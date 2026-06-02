@@ -57,7 +57,7 @@ print(f"dim_athlete: {spark.table('marathos.gold.dim_athlete').count():,} rows")
 
 # COMMAND ----------
 
-# MAGIC %md ## dim_date — BONUS
+# MAGIC %md ## dim_date 
 # MAGIC Built from the distinct event dates present in the data.
 
 # COMMAND ----------
