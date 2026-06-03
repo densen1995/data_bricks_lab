@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # BONUS — Simulated marathon generator
+# MAGIC # Simulated marathon generator
 # MAGIC
 # MAGIC Generates a synthetic "new" marathon event (using a small LLM call as the
 # MAGIC creative seed) and drops the finisher rows as a CSV under
@@ -8,7 +8,7 @@
 # MAGIC then unions this folder with the historical CSV folder into a single
 # MAGIC `marathos.bronze.races_raw` table — no separate streaming table.
 # MAGIC
-# MAGIC Re-run this notebook any time you want to push a new fictional race
+# MAGIC Re-run this notebook any time to push a new fictional race
 # MAGIC through the medallion pipeline; the next bronze run will pick it up.
 
 # COMMAND ----------
@@ -26,7 +26,7 @@ FALLBACK_EVENT = {
 }
 
 
-def _sanitize_event(raw: str) -> dict:
+def transform_event(raw: str) -> dict:
     """Parse an LLM response into a safe event dict — raises ValueError on bad input."""
     # 1. Strip markdown fences / leading prose the model sometimes adds despite instructions.
     text = raw.strip()
@@ -116,7 +116,7 @@ try:
     )
     resp.raise_for_status()
     raw_content = resp.json()["choices"][0]["message"]["content"]
-    event = _sanitize_event(raw_content)
+    event = transform_event(raw_content)
 except Exception as e:
     print(f"LLM call/sanitization failed ({e}); using static fallback")
     event = dict(FALLBACK_EVENT)

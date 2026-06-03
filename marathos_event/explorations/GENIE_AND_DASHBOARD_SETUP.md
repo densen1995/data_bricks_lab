@@ -1,6 +1,6 @@
 ## Task 6 — Lakeview dashboard 
 
-0. (Including instructions on how to navigate the dashboard)
+0. (Includes instructions on how to navigate the dashboard)
 1. **Dashboards → Create dashboard**, name: `marathos_overview`.
 2. Set the data source to the Serverless Starter Warehouse.
 3. Open `explorations/03_dashboard_queries.sql`. For each cell:
