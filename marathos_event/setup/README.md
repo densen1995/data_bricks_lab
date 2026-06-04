@@ -1,8 +1,24 @@
 # Marathos ETL pipeline 
 
+
+This project builds a Databricks medallion pipeline for marathon race results from the TWO_CENTURIES_OF_UM_RACES dataset.
+The purpose is to create a data platform that helps Marathos business stakeholders explore race results, marathon types, athlete performance, and country participation.
+
 Databricks medallion-architecture project for the **Marathos race**. Ingests two
 centuries of ultramarathon race results into a `marathos` Unity Catalog and
 exposes a star-schema gold layer for dashboards and a Genie space.
+
+
+## Tech stack
+- Databricks(Databricks dashboards / Genie)
+- Unity Catalog
+- PySpark
+- SQL
+- Git and GitHub
+
+
+
+
 
 ## Layout
 
@@ -53,6 +69,19 @@ marathos
     ├── vw_time_yearly_progression
     └── vw_results_enriched          
 ```
+
+## Medallion architecture
+
+- Bronze: 
+The Bronze layer stores the raw race data from the CSV file as a Delta table with minimal changes.
+
+- Silver:
+The Silver layer cleans the data and creates one big table (OBT). Invalid or out-of-scope rows are removed based on documented cleaning rules.
+
+- Gold:
+The Gold layer contains dimensional tables, a fact table, and views for analysis and dashboarding.
+
+
 
 ## Pipeline order (manual)
 
