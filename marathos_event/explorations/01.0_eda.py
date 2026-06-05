@@ -14,6 +14,9 @@ from pyspark.sql.types import (
 
 RAW_PATH = "/Volumes/marathos/default/raw/historical/TWO_CENTURIES_OF_UM_RACES.csv"
 
+
+
+
 # COMMAND ----------
 
 # MAGIC %md
