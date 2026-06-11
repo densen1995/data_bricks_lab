@@ -20,28 +20,36 @@ exposes a star-schema gold layer for dashboards and a Genie space.
 
 
 
+The medallion layers are built as a **Lakeflow Declarative Pipeline** — each layer
+is a streaming table or materialized view, not a batch `overwrite`. New CSVs (e.g.
+from the simulated stream) flow through bronze → silver → gold incrementally.
+
 ## Layout
 
 ```
 marathos_event/
 ├── dimensional_modeling/
-│   └── marathos_star_schema.dbml
-│   └── marathosdb(1).png    
+│   ├── marathos_star_schema.dbml
+│   └── marathosdb(1).png
 ├── explorations/
-│   ├── 01_eda.py                   
-│   ├── 02_genie_answer_validation.py 
-│   └── 03_dashboard_queries.sql     
-├── transformations/
-│   ├── bronze/01_ingest_races_bronze.py   
-│   ├── silver/01_clean_races_silver.py   
+│   ├── 01_eda.py
+│   ├── 02_genie_answer_validation.py
+│   └── 03_dashboard_queries.sql
+├── transformations/                    # <- the Lakeflow pipeline source
+│   ├── bronze/races_raw.py             # STREAMING TABLE (readStream from raw volume)
+│   ├── silver/races_obt.py             # STREAMING TABLE (FROM STREAM bronze)
 │   └── gold/
-│       ├── 01_build_gold_tables.py        
-│       └── 02_create_views.sql             
+│       ├── fct_results.sql             # STREAMING TABLE (FROM STREAM silver)
+│       ├── dim_event.sql               # MATERIALIZED VIEW
+│       ├── dim_athlete.sql             # MATERIALIZED VIEW
+│       ├── dim_date.sql                # MATERIALIZED VIEW
+│       ├── dim_country.py              # MATERIALIZED VIEW (curated lookup)
+│       └── vw_*.sql                    # MATERIALIZED VIEWs (serving layer)
 └── utils/
-    ├── setup_unity_catalog.sql     
-    ├── 01_country_abbreviations.py 
-    ├── 02_simulated_marathon_stream.py 
-      
+    ├── utils.py                        # shared helpers (imported by the pipeline)
+    ├── setup_unity_catalog.sql
+    ├── 02_simulated_marathon_stream.py
+    └── marathos_pipeline.json          # Lakeflow pipeline spec
 ```
 
 ## Unity Catalog
@@ -72,26 +80,29 @@ marathos
 
 ## Medallion architecture
 
-- Bronze: 
-The Bronze layer stores the raw race data from the CSV file as a Delta table with minimal changes.
+- Bronze (**streaming table**):
+Streams the raw race CSVs from the volume into `bronze.races_raw` with Auto Loader,
+keeping `source_file` lineage. New files are ingested incrementally.
 
-- Silver:
-The Silver layer cleans the data and creates one big table (OBT). Invalid or out-of-scope rows are removed based on documented cleaning rules.
+- Silver (**streaming table**):
+Reads `FROM STREAM` bronze, cleans the data, and builds one big table (OBT).
+Invalid/out-of-scope rows are removed per the cleaning rules. Surrogate keys use
+`sha2()` so the transforms are streaming-safe (window functions are not).
 
 - Gold:
-The Gold layer contains dimensional tables, a fact table, and views for analysis and dashboarding.
+The fact table `fct_results` is a **streaming table** (`FROM STREAM` silver).
+Dimensions and serving views aggregate, so they are **materialized views**.
 
+## Running it
 
-
-## Pipeline order (manual)
-
-1. `utils/setup_unity_catalog.sql`
-2. CSV upload to `/Volumes/marathos/default/raw/historical` 
-3. `transformations/bronze/01_ingest_races_bronze + simulated marathon data(utils/02_simulated_marathon_stream)`
-4. `transformations/silver/01_clean_races_silver`
-5. `utils/01_country_abbreviations` 
-6. `transformations/gold/01_build_gold_tables`
-7. `transformations/gold/02_create_views`
+1. Run `utils/setup_unity_catalog.sql` once (catalog, schemas, raw volume).
+2. Upload the historical CSV to `/Volumes/marathos/default/raw/historical`.
+3. Create the Lakeflow pipeline from `utils/marathos_pipeline.json`
+   (or in the UI: **Lakeflow Pipelines → Create**, root = `marathos_event`,
+   source = `transformations/`, serverless). Click **Run** — it builds
+   bronze → silver → gold in dependency order.
+4. (Optional) Run `utils/02_simulated_marathon_stream.py` to drop a new race CSV;
+   the next pipeline run ingests it incrementally — this demonstrates streaming.
 
 ## Source attribution
 

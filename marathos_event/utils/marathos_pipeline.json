@@ -1,0 +1,16 @@
+{
+  "_comment": "Lakeflow Declarative Pipeline spec for Marathos. Create with `databricks pipelines create --json @marathos_pipeline.json` (paths below are absolute workspace paths - adjust the user folder if different), or in the UI: Lakeflow Pipelines > Create, set the root to marathos_event and add transformations/. All tables use fully-qualified marathos.<schema>.<table> names.",
+  "name": "marathos_pipeline_dennis",
+  "catalog": "marathos",
+  "schema": "default",
+  "serverless": true,
+  "photon": true,
+  "continuous": false,
+  "development": true,
+  "channel": "CURRENT",
+  "root_path": "/Users/densen1995@gmail.com/data_bricks_lab/marathos_event",
+  "libraries": [
+    {"glob": {"include": "/Users/densen1995@gmail.com/data_bricks_lab/marathos_event/transformations/**"}},
+    {"glob": {"include": "/Users/densen1995@gmail.com/data_bricks_lab/marathos_event/utils/utils.py"}}
+  ]
+}
